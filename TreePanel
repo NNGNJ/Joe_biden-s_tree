@@ -1,0 +1,87 @@
+import java.awt.*;
+import javax.swing.JPanel;
+import java.awt.geom.Line2D;
+
+public class TreePanel extends JPanel
+{
+    private final int PANEL_WIDTH = 400;
+    private final int PANEL_HEIGHT = 400;
+
+    private final double SQ = Math.sqrt(3.0) / 6;
+
+    private final int TOPX = 200, TOPY = 20;
+    private final int LEFTX = 60, LEFTY = 300;
+    private final int RIGHTX = 340, RIGHTY = 300;
+    private int ded=20;
+    private int direction=1;
+    private int current; //current order
+
+    //-----------------------------------------------------------------
+    //  Sets the initial fractal order to the value specified.
+    //-----------------------------------------------------------------
+    public TreePanel (int currentOrder)
+    {
+        current = currentOrder;
+        setBackground (Color.black);
+        setPreferredSize (new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
+    }
+
+    //-----------------------------------------------------------------
+    //  Draws the fractal recursively. Base case is an order of 1 for
+    //  which a simple straight line is drawn. Otherwise three
+    //  intermediate points are computed, and each line segment is
+    //  drawn as a fractal.
+    //-----------------------------------------------------------------
+    public void drawFractal (int xp,int yp, double len,int ang, int order, Graphics page)
+    {
+        Graphics2D g2 = (Graphics2D) page;
+        if(len<=1){return;}
+        if(order<=1){return;}
+        int x1=xp;int y1=yp;
+        int vert=(int)(len*Math.sin(Math.toRadians(ang)));int hor=(int)(len*Math.cos(Math.toRadians(ang)));
+        int y2=y1-vert;
+        int x2=x1+hor;
+        Line2D.Double line = new Line2D.Double( x1, y1, x2, y2 );
+        g2.draw(line);
+        drawFractal(x2, y2,.8*len,ang-ded,order-1, page);
+        drawFractal(x2, y2,.8*len,ang+ded,order-1, page);
+        
+        
+    }
+
+    //-----------------------------------------------------------------
+    //  Performs the initial calls to the drawFractal method.
+    //-----------------------------------------------------------------
+    @Override
+    public void paintComponent (Graphics page)
+    {
+        super.paintComponent (page);
+
+        page.setColor (Color.red);
+        
+        drawFractal(200,400,100,90,current, page);
+    }
+
+    //-----------------------------------------------------------------
+    //  Sets the fractal order to the value specified.
+    //-----------------------------------------------------------------
+    public void setOrder (int order)
+    {
+        current = order;
+        
+        //ded=ded+5;
+    }
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+    //-----------------------------------------------------------------
+    //  Returns the current order.
+    //-----------------------------------------------------------------
+    public int getOrder ()
+    {
+        return current;
+    }
+    public void setAngle(int angle){
+        ded=angle;
+    }
+}
